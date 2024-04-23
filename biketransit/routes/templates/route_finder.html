@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="biketransit\static\css\project.css">
+    <style>
+
+        #instructions {
+            position: absolute;
+            margin: 20px;
+            width: 15%;
+            left: 82%;
+            top: 100px;
+            bottom: 20%;
+            padding: 20px;
+            background-color: #fff;
+            overflow-y: scroll;
+            font-family: sans-serif;
+            outline: 8px ridge green;
+            border-radius: 2rem;
+            
+        }
+
+        #input {
+            position: absolute;
+            margin: 20px;
+            width: 9%;
+            top: 15%;
+            padding: 20px;
+            background-color: #fff;
+            font-family: sans-serif;
+            text-align: center;
+            background: rgb(62,126,84);
+            background: radial-gradient(circle, rgba(62,126,84,1) 0%, rgba(172,197,226,1) 100%);
+            outline: 8px ridge green;
+            border-radius: 2rem;
+        }
+        #input > button{
+            background-color: #12df94;
+            outline: 1px ridge green;
+            border-radius: 1rem;
+        }
+        #boxTitle {
+            position: absolute;
+            margin: 18px;
+            width: 15%;
+            top: 6%;
+            padding: 10px;
+        }
+    </style>
+</head>
+<div id="map"></div>
+<div id="interface">
+    <div id="boxTitle">
+        <h2>Create Route</h1>
+    </div>
+    <div id="input">
+        <button id="start">Start</button>
+        <button id="destination">Destination</button>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block customJavascript %}
+
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWF0dHRpbW1vbnMxIiwiYSI6ImNsdTFiNzlvdTBjYWoyam82MWdoaW4xNGUifQ.EjEqI9OzRl7BB8humwV59g';
+    const map = new mapboxgl.Map({
+        container: 'map', // container ID
+        center: [-78.8689, 38.4496], // starting position [lng, lat]
+        zoom: 14 // starting zoom
+    });
+    // const start = [-78.8689, 38.4496];
+    let start = null
+    let destination = null
+
+    // create a function to make a directions request
+    async function getRoute() {
+        // make a directions request using cycling profile
+        // an arbitrary start will always be the same
+        // only the end or destination will change
+        const query = await fetch(
+            `https://api.mapbox.com/directions/v5/mapbox/cycling/${start[0]},${start[1]};${destination[0]},${destination[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+            { method: 'GET' }
+        );
+        const json = await query.json();
+        const data = json.routes[0];
+        const route = data.geometry.coordinates;
+        const geojson = {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: route
+            }
+        };
+        // if the route already exists on the map, we'll reset it using setData
+        if (map.getSource('route')) {
+            map.getSource('route').setData(geojson);
+        }
+        // otherwise, we'll make a new request
+        else {
+            map.addLayer({
+                id: 'route',
+                type: 'line',
+                source: {
+                    type: 'geojson',
+                    data: geojson
+                },
+                layout: {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                paint: {
+                    'line-color': '#3887be',
+                    'line-width': 5,
+                    'line-opacity': 0.75
+                }
+            });
+        }
+        // add turn instructions here at the end
+        // get the sidebar and add the instructions
+        let instructions = document.getElementById('instructions');
+        if(!instructions){
+            instructions = document.createElement("div")
+            instructions.setAttribute("id", "instructions")
+            document.getElementById("interface").appendChild(instructions)
+        }
+        const steps = data.legs[0].steps;
+
+        let tripInstructions = '';
+        for (const step of steps) {
+            tripInstructions += `<li>${step.maneuver.instruction}</li>`;
+        }
+        instructions.innerHTML = `<p><strong>Trip duration: ${Math.floor(
+            data.duration / 60
+        )} min 🚴 </strong></p><ol>${tripInstructions}</ol>`;
+    }
+
+
+    document.getElementById("start").addEventListener("click", () => {
+        map.once('click', (event) => {
+            start = Object.keys(event.lngLat).map((key) => event.lngLat[key]);
+
+            if (map.getLayer('start')) {
+                map.removeLayer('start');
+            }
+            if (map.getSource('start')) {
+                map.removeSource('start');
+            }
+
+            map.addLayer({
+                id: 'start',
+                type: 'circle',
+                source: {
+                    type: 'geojson',
+                    data: {
+                        type: 'FeatureCollection',
+                        features: [
+                            {
+                                type: 'Feature',
+                                properties: {},
+                                geometry: {
+                                    type: 'Point',
+                                    coordinates: start
+                                }
+                            }
+                        ]
+                    }
+                },
+                paint: {
+                    'circle-radius': 10,
+                    'circle-color': '#450084'
+                }
+            });
+
+            if (start != null && destination != null) {
+                getRoute();
+            }
+
+        });
+
+    });
+
+    document.getElementById("destination").addEventListener("click", () => {
+        map.once('click', (event) => {
+            destination = Object.keys(event.lngLat).map((key) => event.lngLat[key]);
+
+            if (map.getLayer('destination')) {
+                map.removeLayer('destination');
+            }
+            if (map.getSource('destination')) {
+                map.removeSource('destination');
+            }
+
+            map.addLayer({
+                id: 'destination',
+                type: 'circle',
+                source: {
+                    type: 'geojson',
+                    data: {
+                        type: 'FeatureCollection',
+                        features: [
+                            {
+                                type: 'Feature',
+                                properties: {},
+                                geometry: {
+                                    type: 'Point',
+                                    coordinates: destination
+                                }
+                            }
+                        ]
+                    }
+                },
+                paint: {
+                    'circle-radius': 10,
+                    'circle-color': '#CBB677'
+                }
+            });
+
+            if (start != null && destination != null) {
+                getRoute();
+            }
+        });
+    });
+
+</script>
+{% endblock customJavascript %}

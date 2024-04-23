@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static %}
+  <h1>Bike Transit of Harrisonburg</h1>
+  <p>
+    Welcome to Bike Transit of Harrisonburg, a website developed by
+    <em>Team 32</em>!
+  </p>
+  
+  <!-- Slideshow container -->
+<div class="slideshow-container">
+
+  <!-- Full-width images with number and caption text -->
+  <div class="mySlides fade">
+    <div class="numbertext">1 / 3</div>
+    <img src="{% static 'images/harrisonburg1.png' %}" style="width:100%">
+    <div class="text"></div>
+  </div>
+
+  <div class="mySlides fade">
+    <div class="numbertext">2 / 3</div>
+    <img src="{% static 'images/harrisonburg2.jpg' %}" style="width:100%">
+    <div class="text"></div>
+  </div>
+
+  <div class="mySlides fade">
+    <div class="numbertext">3 / 3</div>
+    <img src="{% static 'images/harrisonburg3.png' %}" style="width:100%">
+    <div class="text"></div>
+  </div>
+
+  <!-- Next and previous buttons -->
+  <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+  <a class="next" onclick="plusSlides(1)">&#10095;</a>
+</div>
+<br>
+
+<!-- The dots/circles -->
+<div style="text-align:center">
+  <span class="dot" onclick="currentSlide(1)"></span>
+  <span class="dot" onclick="currentSlide(2)"></span>
+  <span class="dot" onclick="currentSlide(3)"></span>
+</div>
+  <div class="bottomnav">
+  
+  </div>
+{% endblock %}
+
