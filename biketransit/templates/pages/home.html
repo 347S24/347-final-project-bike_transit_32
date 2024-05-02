@@ -12,19 +12,19 @@
 <div class="slideshow-container">
 
   <!-- Full-width images with number and caption text -->
-  <div class="mySlides fade">
+  <div class="mySlides fade1">
     <div class="numbertext">1 / 3</div>
     <img src="{% static 'images/harrisonburg1.png' %}" style="width:100%">
     <div class="text"></div>
   </div>
 
-  <div class="mySlides fade">
+  <div class="mySlides fade2">
     <div class="numbertext">2 / 3</div>
     <img src="{% static 'images/harrisonburg2.jpg' %}" style="width:100%">
     <div class="text"></div>
   </div>
 
-  <div class="mySlides fade">
+  <div class="mySlides fade3">
     <div class="numbertext">3 / 3</div>
     <img src="{% static 'images/harrisonburg3.png' %}" style="width:100%">
     <div class="text"></div>
@@ -46,17 +46,19 @@
   
   </div>
   <script>
-    let slideIndex = 1;
+  let slideIndex = 1;
   showSlides(slideIndex);
   
   // Next/previous controls
   function plusSlides(n) {
     showSlides(slideIndex += n);
+    console.log("plus");
   }
   
   // Thumbnail image controls
   function currentSlide(n) {
     showSlides(slideIndex = n);
+    console.log("current")
   }
   
   function showSlides(n) {
@@ -73,6 +75,7 @@
     }
     slides[slideIndex-1].style.display = "block";
     dots[slideIndex-1].className += " active";
+    console.log("done")
   }
   </script>
 {% endblock %}
