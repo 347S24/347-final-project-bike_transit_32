@@ -1,7 +1,15 @@
 from django.db import models
+from users.models import User
 
 # Create your models here.
-class route(models.Model):
+class Location(models.Model):
+    name = models.CharField()
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+class Route(models.Model):
     name = models.CharField(max_length=30)
-    name = models.IntegerField(max_length=20)
-    coordinates = models.CharField()
+    start = models.ForeignKey(Location)
+    destination = models.ForeignKey(Location)
+    creator = models.ForeignKey(User)
+
