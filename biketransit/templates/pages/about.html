@@ -1,1 +1,37 @@
 {% extends "base.html" %}
+{% block content %}
+{% load static %}
+<style>
+    #about_images {
+        display: flex;
+        justify-content: space-around;
+    }
+    img{
+        display: flex;
+        justify-content: space-around;
+    }
+
+    h2 {
+        display:flex;
+        justify-content: center;
+    }
+</style>
+<div id="about_images">
+    <img src="{% static 'images/harrisonburg4.jpg' %}" style="width:40%">
+    <img src="{% static 'images/harrisonburg5.jpg' %}" style="width:40%">
+</div>
+<br>
+
+<h1>About Us:</h2>
+<p style="text-indent: 25px;">
+    Bike Transit is revolutionizing the way people plan their bike trips. With its user-friendly interface and innovative features, 
+    Bike Transit allows users to create their own custom routes, making biking adventures more accessible and enjoyable than ever before. 
+    Whether you're a seasoned cyclist looking for new challenges or a beginner wanting to explore your city on two wheels, Bike Transit has 
+    something for everyone.
+
+    Bike Transit not only provides an easy way to plan biking routes but also prioritizes safety. The website includes features 
+    that allow users to choose routes that are safer and more bike-friendly, minimizing the risk of accidents and ensuring a smooth 
+    and enjoyable ride.
+</p>
+
+{% endblock %}
