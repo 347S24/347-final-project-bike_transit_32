@@ -3,5 +3,10 @@
 {% block content %}
 
 <h1>Saved Routes</h1>
+<ul>
+    {% for x in routes %}
+      <li>{{ x.name }}</li>
+    {% endfor %}
+  </ul>
 
 {% endblock content %}
