@@ -31,3 +31,10 @@ def routes(request):
     }
 
     return render(request, 'route_finder.html', context)
+
+def saved_routes(request):
+    
+    context = {
+        'num_routes': 0,
+    }
+    return render(request, 'saved_routes.html', context)

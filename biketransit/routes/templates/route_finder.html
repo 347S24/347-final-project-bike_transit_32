@@ -66,11 +66,12 @@
 <div id="map"></div>
 <div id="interface">
     <div id="boxTitle">
-        <h2>Create Route</h1>
+        <h1>Create Route</h1>
     </div>
     <div id="input">
         <button id="start">Start</button>
         <button id="destination">Destination</button>
+        <button id="save" onclick="saveRoute()">Save Route</button>
     </div>
 </div>
 
@@ -240,6 +241,14 @@
             }
         });
     });
+
+    async function saveRoute() {
+        if (start != null && destination != null) {
+            
+        } else {
+            alert("Please choose a start and a destination")
+        }
+    }
 
 </script>
 {% endblock customJavascript %}
