@@ -5,8 +5,26 @@
 <h1>Saved Routes</h1>
 <ul>
     {% for x in routes %}
-      <li>{{ x.name }}</li>
+        {% for y in locations %}
+            {% for z in locations %}
+                {% if x.start_id == y.id and x.destination_id == z.id %}
+                    <li><button onclick='buttonHandler("{{ y.latitude }}", "{{ y.longitude }}", "{{ z.latitude }}", "{{ z.longitude }}")'>{{ x.name }}</button></li>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
     {% endfor %}
   </ul>
 
+
+
+<script>
+
+    function buttonHandler(startingLatitude, startingLongitude, destinationLatitude, destinationLongitude){
+        localStorage.setItem("startingLatitude", startingLatitude)
+        localStorage.setItem("startingLongitude", startingLongitude)
+        localStorage.setItem("destinationLatitude", destinationLatitude)
+        localStorage.setItem("destinationLongitude", destinationLongitude)
+        window.location.href = "{% url 'routes' %}"
+    }
+</script>
 {% endblock content %}

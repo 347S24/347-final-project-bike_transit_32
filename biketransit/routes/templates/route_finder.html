@@ -250,5 +250,69 @@
         }
     }
 
+    if (localStorage.getItem('startingLatitude') !== null) {
+        window.addEventListener('load', function() {
+            start = [parseFloat(localStorage.getItem('startingLongitude')), parseFloat(localStorage.getItem('startingLatitude'))]
+            destination = [parseFloat(localStorage.getItem('destinationLongitude')), parseFloat(localStorage.getItem('destinationLatitude'))]
+            localStorage.removeItem('startingLatitude')
+            localStorage.removeItem('startingLongitude')
+            localStorage.removeItem('destinationLatitude')
+            localStorage.removeItem('destinationLongitude')
+            getRoute()
+
+            map.addLayer({
+                id: 'start',
+                type: 'circle',
+                source: {
+                    type: 'geojson',
+                    data: {
+                        type: 'FeatureCollection',
+                        features: [
+                            {
+                                type: 'Feature',
+                                properties: {},
+                                geometry: {
+                                    type: 'Point',
+                                    coordinates: start
+                                }
+                            }
+                        ]
+                    }
+                },
+                paint: {
+                    'circle-radius': 10,
+                    'circle-color': '#450084'
+                }
+            });
+
+            map.addLayer({
+                id: 'destination',
+                type: 'circle',
+                source: {
+                    type: 'geojson',
+                    data: {
+                        type: 'FeatureCollection',
+                        features: [
+                            {
+                                type: 'Feature',
+                                properties: {},
+                                geometry: {
+                                    type: 'Point',
+                                    coordinates: destination
+                                }
+                            }
+                        ]
+                    }
+                },
+                paint: {
+                    'circle-radius': 10,
+                    'circle-color': '#CBB677'
+                }
+            });
+
+            map.setCenter([start[0], start[1]]);
+
+        })
+    }
 </script>
 {% endblock customJavascript %}

@@ -32,9 +32,11 @@ def routes(request):
     return render(request, 'route_finder.html', context)
 
 def saved_routes(request):
-    routes = Route.objects.values()
+    routes = Route.objects.all().values()
+    locations = Location.objects.values()
     context = {
         'num_routes': 0,
         'routes': routes,
+        'locations': locations,
     }
     return render(request, 'saved_routes.html', context)
